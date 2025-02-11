@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post - Social Media Scheduler</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-gray-800 to-blue-500 text-gray-100 font-roboto">
+    <!-- Header -->
+    <header class="bg-gray-800 text-gray-100 p-4 flex justify-between items-center">
+        <div class="logo text-2xl font-bold">Social Scheduler</div>
+        <nav>
+            <a href="dashboard.html" class="ml-4 text-gray-100 font-medium">Home</a>
+            <a href="#" class="ml-4 text-gray-100 font-medium">About</a>
+            <a href="#" class="ml-4 text-gray-100 font-medium">Contact</a>
+            <a href="#" onclick="logout()" class="ml-4 text-gray-100 font-medium">Logout</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content text-center p-8">
+        <h1 class="text-4xl mb-4">Create a New Post</h1>
+        <p class="text-xl mb-8">Fill in the details below to schedule your social media post.</p>
+
+        <div class="form-container max-w-2xl mx-auto bg-gray-800 p-8 rounded-lg shadow-lg">
+            <form id="createPostForm" class="space-y-4">
+                <!-- Post Title -->
+                <div>
+                    <label for="post-title" class="block text-left">Post Title</label>
+                    <input type="text" id="post-title" name="post-title" placeholder="Enter your post title" required class="w-full p-2 rounded bg-gray-700 text-gray-100">
+                </div>
+
+                <!-- Post Content -->
+                <div>
+                    <label for="post-content" class="block text-left">Post Content</label>
+                    <textarea id="post-content" name="post-content" rows="5" placeholder="Write your post content here" required class="w-full p-2 rounded bg-gray-700 text-gray-100"></textarea>
+                </div>
+
+                <!-- Upload Images -->
+                <div>
+                    <label for="post-images" class="block text-left">Upload Images</label>
+                    <input type="file" id="post-images" name="post-images[]" accept="image/*" multiple onchange="previewImages()" class="w-full p-2 rounded bg-gray-700 text-gray-100">
+                </div>
+
+                <!-- Image Preview -->
+                <div class="image-preview" id="image-preview"></div>
+
+                <!-- Schedule Date -->
+                <div>
+                    <label for="post-date" class="block text-left">Schedule Date</label>
+                    <input type="date" id="post-date" name="post-date" required class="w-full p-2 rounded bg-gray-700 text-gray-100">
+                </div>
+
+                <!-- Schedule Time -->
+                <div>
+                    <label for="post-time" class="block text-left">Schedule Time</label>
+                    <input type="time" id="post-time" name="post-time" required class="w-full p-2 rounded bg-gray-700 text-gray-100">
+                </div>
+
+                <!-- Select Platform -->
+                <div>
+                    <label for="post-platform" class="block text-left">Select Platform</label>
+                    <select id="post-platform" name="post-platform" required class="w-full p-2 rounded bg-gray-700 text-gray-100">
+                        <option value="facebook">Facebook</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="linkedin">LinkedIn</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full p-2 rounded bg-blue-600 text-gray-100 hover:bg-blue-700 transition">
+                    <i class="fas fa-paper-plane"></i> Schedule Post
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Popup -->
+    <div id="notification" class="hidden fixed top-0 left-0 w-full bg-green-500 text-white text-center p-4 z-50">
+        <p id="notification-message">Post scheduled successfully!</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Show notification popup
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationMessage = document.getElementById('notification-message');
+            
+            notificationMessage.textContent = message;
+            notification.classList.remove('hidden');
+
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Preview images
+        function previewImages() {
+            const preview = document.getElementById('image-preview');
+            preview.innerHTML = '';
+            const files = document.getElementById('post-images').files;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.classList.add('relative', 'inline-block', 'mr-2', 'mb-2');
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = `Uploaded image ${i + 1}`;
+                    img.classList.add('w-32', 'h-32', 'object-cover', 'rounded');
+                    const button = document.createElement('button');
+                    button.innerHTML = '&times;';
+                    button.classList.add('absolute', 'top-0', 'right-0', 'bg-red-600', 'text-white', 'rounded-full', 'w-6', 'h-6', 'flex', 'items-center', 'justify-center', 'cursor-pointer');
+                    button.onclick = function() {
+                        div.remove();
+                    };
+                    div.appendChild(img);
+                    div.appendChild(button);
+                    preview.appendChild(div);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Get cookie
+        function getCookie(name) {
+            const cookieArr = document.cookie.split(';');
+            for (let i = 0; i < cookieArr.length; i++) {
+                const cookie = cookieArr[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    return cookie.substring(name.length + 1);
+                }
+            }
+            return null;
+        }
+
+        // Submit form
+        document.getElementById('createPostForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const title = document.querySelector('input[name="post-title"]').value;
+            const content = document.querySelector('textarea[name="post-content"]').value;
+            const platform = document.querySelector('select[name="post-platform"]').value;
+            const date = document.querySelector('input[name="post-date"]').value;
+            const time = document.querySelector('input[name="post-time"]').value;
+            const scheduleTime = new Date(`${date}T${time}`);
+            const userId = getCookie('userId');
+
+            if (!userId) {
+                alert('User not logged in');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('userId', userId);
+            formData.append('title', title);
+            formData.append('content', content);
+            formData.append('platform', platform);
+            formData.append('scheduleTime', scheduleTime);
+
+            const images = document.getElementById('post-images').files;
+            for (let i = 0; i < images.length; i++) {
+                formData.append('post-images', images[i]);
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/posts/create', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include',
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showNotification('Post scheduled successfully!');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 3000);
+                } else {
+                    alert(data.message || 'Error scheduling post');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                });
+
+                if (response.ok) {
+                    alert('Logged out successfully!');
+                    window.location.href = 'login.html';
+                } else {
+                    alert('Logout failed.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>
+
+

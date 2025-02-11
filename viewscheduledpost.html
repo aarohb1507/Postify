@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Scheduled Posts - Social Media Scheduler</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #1f2937, #3b82f6);
+            color: #f3f4f6;
+        }
+        header {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        nav a {
+            color: #f3f4f6;
+            margin-left: 1rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .main-content {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        .main-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .main-content p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .post-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #1f2937;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .post {
+            background-color: #3b82f6;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        .post h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .post p {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .post img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+        .post .post-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .post .post-info span {
+            font-size: 0.875rem;
+            color: #f3f4f6;
+        }
+        .post .post-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .post .post-actions button {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .post .post-actions button:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-gray-800 to-blue-500 text-gray-100 font-roboto">
+    <!-- Header -->
+    <header class="bg-gray-800 text-gray-100 p-4 flex justify-between items-center">
+        <div class="logo text-2xl font-bold">Social Scheduler</div>
+        <nav>
+            <a href="dashboard.html" class="ml-4 text-gray-100 font-medium">Home</a>
+            <a href="#" class="ml-4 text-gray-100 font-medium">About</a>
+            <a href="#" class="ml-4 text-gray-100 font-medium">Contact</a>
+            <a href="#" onclick="logout()" class="ml-4 text-gray-100 font-medium">Logout</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content text-center p-8">
+        <h1 class="text-4xl mb-4">View Scheduled Posts</h1>
+        <p class="text-xl mb-8">Here are your scheduled social media posts.</p>
+
+        <!-- Posts Container -->
+        <div id="posts-container" class="space-y-4 max-w-4xl mx-auto">
+            <!-- Posts will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Notification Popup -->
+    <div id="notification" class="hidden fixed top-0 left-0 w-full bg-green-500 text-white text-center p-4 z-50">
+        <p id="notification-message"></p>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const postsContainer = document.getElementById('posts-container');
+
+        // Show notification popup
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationMessage = document.getElementById('notification-message');
+
+            notificationMessage.textContent = message;
+            notification.classList.remove('hidden');
+
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Fetch and display posts
+        async function fetchScheduledPosts() {
+            try {
+                const response = await fetch('http://localhost:3000/api/posts/view', {
+                    method: 'GET',
+                    credentials: 'include',
+                });
+
+                const posts = await response.json();
+
+                if (response.ok) {
+                    renderPosts(posts);
+                } else {
+                    showNotification(posts.message || 'Failed to fetch posts.');
+                }
+            } catch (error) {
+                console.error(error);
+                showNotification('An error occurred while fetching posts.');
+            }
+        }
+
+        // Render posts in the DOM
+        function renderPosts(posts) {
+            postsContainer.innerHTML = ''; // Clear container
+
+            if (posts.length === 0) {
+                postsContainer.innerHTML = `<p class="text-lg text-gray-300">No scheduled posts found.</p>`;
+                return;
+            }
+
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('bg-gray-700', 'p-4', 'rounded', 'shadow-lg');
+
+                postElement.innerHTML = `
+                    <div class="flex justify-between">
+                        <h3 class="text-2xl font-bold">${post.title}</h3>
+                        <div>
+                            <button onclick="editPost('${post.id}')" class="text-blue-400 hover:underline">Edit</button>
+                            <button onclick="deletePost('${post.id}')" class="text-red-400 hover:underline ml-2">Delete</button>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mt-2">${post.content}</p>
+                    <div class="mt-4">
+                        <p><strong>Platform:</strong> ${post.platform}</p>
+                        <p><strong>Scheduled Time:</strong> ${new Date(post.scheduleTime).toLocaleString()}</p>
+                    </div>
+                    <div class="mt-4 flex flex-wrap">
+                        ${post.images
+                            .map(image => `<img src="${image}" alt="Post Image" class="w-24 h-24 object-cover rounded mr-2 mb-2">`)
+                            .join('')}
+                    </div>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }
+
+        // Edit a post
+        function editPost(postId) {
+            window.location.href = `edit-post.html?postId=${postId}`;
+        }
+
+        // Delete a post
+        async function deletePost(postId) {
+            if (!confirm('Are you sure you want to delete this post?')) return;
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/posts/delete/${postId}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                });
+
+                if (response.ok) {
+                    showNotification('Post deleted successfully.');
+                    fetchScheduledPosts(); // Refresh the list
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Failed to delete post.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                });
+
+                if (response.ok) {
+                    alert('Logged out successfully!');
+                    window.location.href = 'login.html';
+                } else {
+                    alert('Logout failed.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        // Fetch posts on page load
+        fetchScheduledPosts();
+    </script>
+</body>
+</html>
+
+
+
+

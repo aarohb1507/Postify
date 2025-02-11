@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Scheduler - Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #1f2937, #3b82f6);
+            color: #f3f4f6;
+        }
+
+        header {
+            background-color: #1f2937;
+            color: #f3f4f6;
+        }
+
+        .metric:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s ease;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="bg-gray-800 text-white p-4 flex justify-between items-center">
+        <div class="logo text-2xl font-bold">Social Scheduler</div>
+        <nav>
+            <a class="ml-4 text-white hover:underline" href="home.html" aria-label="Go to Home">Home</a>
+            <a class="ml-4 text-white hover:underline" href="dashboard.html" aria-label="Go to Dashboard">Dashboard</a>
+            <a class="ml-4 text-white hover:underline" href="about.html" aria-label="Learn About Us">About</a>
+            <a class="ml-4 text-white hover:underline" href="contact.html" aria-label="Contact Us">Contact</a>
+            <a class="ml-4 text-white hover:underline" href="main.html" aria-label="Logout">Logout</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content text-center py-16 px-4">
+        <h1 class="text-4xl mb-4">Analytics Dashboard</h1>
+        <p class="text-xl mb-8">Track and analyze the performance of your social media posts.</p>
+
+        <!-- Metrics Section -->
+        <div class="metrics grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <div class="metric bg-white p-8 rounded shadow-md text-gray-800 hover:bg-gray-100">
+                <h2 class="text-2xl mb-4">Total Posts</h2>
+                <p class="text-4xl font-bold">120</p>
+            </div>
+            <div class="metric bg-white p-8 rounded shadow-md text-gray-800 hover:bg-gray-100">
+                <h2 class="text-2xl mb-4">Engagement Rate</h2>
+                <p class="text-4xl font-bold">15%</p>
+            </div>
+            <div class="metric bg-white p-8 rounded shadow-md text-gray-800 hover:bg-gray-100">
+                <h2 class="text-2xl mb-4">Followers Gained</h2>
+                <p class="text-4xl font-bold">300</p>
+            </div>
+            <div class="metric bg-white p-8 rounded shadow-md text-gray-800 hover:bg-gray-100">
+                <h2 class="text-2xl mb-4">Total Likes</h2>
+                <p class="text-4xl font-bold">1,200</p>
+            </div>
+            <div class="metric bg-white p-8 rounded shadow-md text-gray-800 hover:bg-gray-100">
+                <h2 class="text-2xl mb-4">Total Comments</h2>
+                <p class="text-4xl font-bold">450</p>
+            </div>
+            <div class="metric bg-white p-8 rounded shadow-md text-gray-800 hover:bg-gray-100">
+                <h2 class="text-2xl mb-4">Shares</h2>
+                <p class="text-4xl font-bold">320</p>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div class="chart bg-white p-8 rounded shadow-md">
+                <h2 class="text-2xl mb-4 text-gray-800">Posts Over Time</h2>
+                <canvas id="postsChart" aria-describedby="postsChartDesc"></canvas>
+                <p id="postsChartDesc" class="text-sm text-gray-600">Shows the number of posts made each month.</p>
+            </div>
+            <div class="chart bg-white p-8 rounded shadow-md">
+                <h2 class="text-2xl mb-4 text-gray-800">Engagement Over Time</h2>
+                <canvas id="engagementChart" aria-describedby="engagementChartDesc"></canvas>
+                <p id="engagementChartDesc" class="text-sm text-gray-600">Tracks user engagement rates monthly.</p>
+            </div>
+            <div class="chart bg-white p-8 rounded shadow-md">
+                <h2 class="text-2xl mb-4 text-gray-800">Likes Over Time</h2>
+                <canvas id="likesChart" aria-describedby="likesChartDesc"></canvas>
+                <p id="likesChartDesc" class="text-sm text-gray-600">Tracks the growth in post likes over time.</p>
+            </div>
+            <div class="chart bg-white p-8 rounded shadow-md">
+                <h2 class="text-2xl mb-4 text-gray-800">Comments Over Time</h2>
+                <canvas id="commentsChart" aria-describedby="commentsChartDesc"></canvas>
+                <p id="commentsChartDesc" class="text-sm text-gray-600">Tracks the number of comments received monthly.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Scripts -->
+    <script>
+        const createChart = (ctxId, label, data) => {
+            const ctx = document.getElementById(ctxId).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        };
+
+        createChart('postsChart', 'Posts', [10, 20, 30, 40, 50, 60, 70]);
+        createChart('engagementChart', 'Engagement', [5, 10, 15, 20, 25, 30, 35]);
+        createChart('likesChart', 'Likes', [100, 200, 300, 400, 500, 600, 700]);
+        createChart('commentsChart', 'Comments', [50, 100, 150, 200, 250, 300, 350]);
+    </script>
+</body>
+
+</html>

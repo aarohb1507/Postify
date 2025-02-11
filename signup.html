@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Social Media Scheduler</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #1f2937, #3b82f6);
+            color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        header {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            position: absolute;
+            top: 0;
+        }
+        header .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        nav a {
+            color: #f3f4f6;
+            margin-left: 1rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .signup-form {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            color: #1f2937;
+        }
+        .signup-form h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .signup-form input {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+        .signup-form button {
+            background-color: #3b82f6;
+            color: #fff;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .signup-form button:hover {
+            background-color: #2563eb;
+            transform: scale(1.05);
+        }
+        .signup-form .login-link {
+            margin-top: 1rem;
+            display: block;
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        .signup-form .login-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Postify</div>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+    <div class="signup-form">
+        <h1>Sign Up</h1>
+        <form id="signupForm">
+            <div class="relative mb-4">
+                <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <input type="text" name="username" placeholder="Username" required class="pl-10">
+            </div>
+            <div class="relative mb-4">
+                <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <input type="email" name="email" placeholder="Email" required class="pl-10">
+            </div>
+            <div class="relative mb-4">
+                <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <input type="password" name="password" placeholder="Password" minlength="8" required class="pl-10">
+                <small id="passwordStrength" class="text-left text-gray-500 block mt-1"></small>
+            </div>
+            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50">Sign Up</button>
+            <div id="formMessage" class="hidden text-red-500 text-sm mt-2"></div>
+        </form>
+        <a href="login.html" class="login-link">Already have an account? Login</a>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form field values
+            const username = document.querySelector('input[name="username"]').value.trim();
+            const email = document.querySelector('input[name="email"]').value.trim();
+            const password = document.querySelector('input[name="password"]').value;
+
+            // Input validation
+            if (!username || !email || !password) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            try {
+                // Sending data to the backend
+                const response = await fetch('http://localhost:3000/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, email, password }),
+                    credentials: 'include', // Include credentials (cookies, session)
+                });
+
+                console.log('Response status:', response.status);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert('Signup successful! Redirecting to login...');
+                    window.location.href = 'login.html'; // Redirect to login page
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.message || 'Error during signup. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error during fetch:', error);
+                alert('An error occurred. Please check your connection and try again.');
+            }
+        });
+    </script>
+</body>
+</html>
+

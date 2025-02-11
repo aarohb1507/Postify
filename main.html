@@ -1,0 +1,92 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postify - Welcome</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #1f2937, #3b82f6);
+            color: #f3f4f6;
+        }
+        header {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        nav a {
+            color: #f3f4f6;
+            margin-left: 1rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .main-content {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        .main-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .main-content p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .cta-buttons a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #3b82f6;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .cta-buttons a:hover {
+            transform: scale(1.05);
+            background-color: #2563eb;
+        }
+        .cta-buttons a i {
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Postify</div>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+    <main class="text-center py-16 px-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-5xl font-bold mb-4">Welcome to Postify</h1>
+            <p class="text-xl mb-8">Streamline your social media scheduling in one place!</p>
+            <img alt="Illustration of a person scheduling social media posts on a computer" class="mx-auto mb-8" height="400" src="https://storage.googleapis.com/a1aa/image/ciZ4eL2dWesoeIiNCZvmwFvOQrnuA7vaMdlK7g1sPCsxu2snA.jpg" width="600">
+            <p class="text-lg mb-8">Our platform allows you to connect all your social media accounts and schedule posts effortlessly. Stay organized and save time with our intuitive interface and powerful features.</p>
+            <a class="bg-blue-600 text-white py-3 px-6 rounded-lg text-lg font-bold inline-block hover:bg-blue-700 transition duration-300" href="signup.html">Get Started</a>
+        </div>
+    </main>
+</body>
+</html>

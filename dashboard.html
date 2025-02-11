@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Scheduler - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #1f2937, #3b82f6);
+            color: #f3f4f6;
+        }
+        header {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .main-content {
+            text-align: center;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo text-2xl font-bold">Postify</div>
+        <nav>
+            <a class="ml-4 text-white" href="home.html">Home</a>
+            <a class="ml-4 text-white" href="about.html">About</a>
+            <a class="ml-4 text-white" href="contact.html">Contact</a>
+            <a class="ml-4 text-white" href="#" onclick="logout()">Log Out</a>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <h1 class="text-4xl mb-4">Welcome to Postify</h1>
+        <p class="text-xl mb-8">Streamline your social media scheduling in one place!</p>
+        <div class="cta-buttons flex justify-center gap-4 mb-16">
+            <a class="bg-blue-500 text-white py-2 px-4 rounded flex items-center gap-2 hover:bg-blue-700 transition" href="createpost.html">
+                <i class="fas fa-pen"></i> Create Post
+            </a>
+            <a class="bg-blue-500 text-white py-2 px-4 rounded flex items-center gap-2 hover:bg-blue-700 transition" href="viewscheduledpost.html">
+                <i class="fas fa-calendar-alt"></i> View Scheduled Posts
+            </a>
+            <a class="bg-blue-500 text-white py-2 px-4 rounded flex items-center gap-2 hover:bg-blue-700 transition" href="analytics.html">
+                <i class="fas fa-chart-line"></i> Analytics
+            </a>
+        </div>
+        <div class="oauth-section grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="oauth-login bg-white p-8 rounded shadow-md">
+                <h2 class="text-2xl mb-4 text-gray-800">Link Your Social Media</h2>
+                <p class="mb-4 text-gray-600">Connect your social media accounts to start scheduling posts.</p>
+                <div class="oauth-buttons flex flex-col gap-4">
+                    <a class="bg-blue-600 text-white py-2 px-4 rounded flex items-center gap-2 hover:bg-blue-800 transition" href="http://localhost:3000/auth/facebook">
+                        <i class="fab fa-facebook-f"></i> Link Facebook
+                    </a>
+                    <a class="bg-blue-400 text-white py-2 px-4 rounded flex items-center gap-2 hover:bg-blue-600 transition" href="/auth/twitter">
+                        <i class="fab fa-twitter"></i> Link Twitter
+                    </a>
+                    <a class="bg-pink-500 text-white py-2 px-4 rounded flex items-center gap-2 hover:bg-pink-700 transition" href="/auth/instagram">
+                        <i class="fab fa-instagram"></i> Link Instagram
+                    </a>
+                    <a class="bg-red-600 text-white py-2 px-4 rounded flex items-center gap-2 hover:bg-red-800 transition" href="/auth/youtube">
+                        <i class="fab fa-youtube"></i> Link YouTube
+                    </a>
+                </div>
+            </div>
+            <div class="oauth-info bg-white p-8 rounded shadow-md">
+                <h2 class="text-2xl mb-4 text-gray-800">Why Link Your Accounts?</h2>
+                <p class="mb-4 text-gray-600">By linking your social media accounts, you can:</p>
+                <ul class="list-disc list-inside mb-4 text-gray-600">
+                    <li>Schedule posts across multiple platforms.</li>
+                    <li>Analyze the performance of your posts.</li>
+                    <li>Manage all your social media in one place.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if the user is authenticated
+        async function checkAuth() {
+            try {
+                const response = await fetch('http://localhost:3000/api/dashboard', {
+                    method: 'GET',
+                    credentials: 'include', // Include session cookies
+                });
+
+                if (!response.ok) {
+                    // If not authenticated, redirect to login
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Authentication check failed:', error);
+                window.location.href = 'login.html';
+            }
+        }
+
+          // Call checkAuth when the page loads
+          document.addEventListener('DOMContentLoaded', checkAuth);
+
+        // Log out the user
+        async function logout() {
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include', // Include session cookies
+                });
+
+                if (response.ok) {
+                    alert('Logged out successfully!');
+                    window.location.href = 'login.html';
+                } else {
+                    alert('Failed to log out.');
+                }
+            } catch (error) {
+                console.error('Logout failed:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        // Check authentication when the page loads
+        checkAuth();
+    </script>
+</body>
+</html>
